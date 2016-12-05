@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!-- use utf-8 character set -->
+	<meta charset="utf-8">
+	<!-- add a meta header so that it compatible with all browsers
+        the following value to display the webpage in edge mode,
+	which is the highest standards mode supported by Internet Explorer -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- use viewport width as per device width (phone, table, browser) -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- link to predefined stylesheet of 'bootstrap' framework stylesheet -->
+	<link rel="stylesheet" type="text/css" href="/static/bootstrap.min.css">
+
+	<!-- link to personal stylesheet -->
+	<link type="text/css" rel="stylesheet" href="/static/main.css" />
+
+	<title>Item Catalog</title>
+</head>
+
+<body>
+	<!-- bootstrap required everything in a container -->
+	<div class="container">
+		<header>
+			<div class="row">
+				<div class="col-md-6">
+					<a href="/item_catalog">Home</a>
+					{% if user %}
+						| <a href="/item_catalog/new_item">New item</a>
+					{% endif %}
+				</div>
+
+				<div class="col-md-6 login-area text-right">
+				{% if user %}
+					<a href="/item_catalog/user/{{user.name}}">
+					  {{user.name}}
+					</a>
+					(<a class="login-link" href="/logout">Logout</a>)
+				{% else %}
+			      		<a class="login-link" href="/login">Login</a>
+			      		|
+			      		<a class="login-link" href="/signup">Signup</a>
+			    	{% endif %}
+				</div>
+			</div>
+		</header>
+
+		<div class="row">
+			<div class="col-md-12 main-title">
+				<a href="/item_catalog" class="main-title">
+		    		Catalog
+		  		</a>
+			</div>
+		</div>
+
+		<div class="row" id="content">
+			{% block content %}
+			{% endblock %}
+		</div>
+		<footer>
+			Item catalog &copy; 2016 Moniphal Say, article contents are &copy; of respective users.
+		</footer>
+
+	</div>
+</body>
+
+</html>
