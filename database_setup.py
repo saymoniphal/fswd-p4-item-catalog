@@ -6,19 +6,19 @@ from sqlalchemy import Column, Integer, String, Sequence, ForeignKey
 
 Base = declarative_base()
 
-class Catalog(Base):
-    """Class represents table 'catalog' in the database which has attributes:
-    name: name of the catalog
-    description: description in text of the catalog
-    catalog_id: the id number of the catalog
+class Category(Base):
+    """Class represents table 'category' in the database which has attributes:
+    name: name of the category
+    description: description in text of the category
+    category_id: the id number of the category
                 (incrementally assigned by the database)
     """
 
     # table name in the database
-    __tablename__ = 'catalogs'
+    __tablename__ = 'categories'
 
     # attributes which represents each column in the table
-    catalog_id = Column(Integer, Sequence('catalog_id_seq'), primary_key=True)
+    category_id = Column(Integer, Sequence('category_id_seq'), primary_key=True)
     name = Column(String(50), nullable=False)
     description = Column(String(255))
     owner = Column(String(50))
@@ -29,7 +29,7 @@ class Item(Base):
     name: name of the item, it should not be empty
     description: description in text of the item
     item_id: the id number of the item (incrementally assigned by the database)
-    catalog_id: the id number of the catalog (refer to catalogs) 
+    category_id: the id number of the category (refer to categories)
     """
 
     # table name in the database
@@ -39,7 +39,7 @@ class Item(Base):
     item_id = Column(Integer, Sequence('item_id_seq'), primary_key=True)
     name = Column(String(50), nullable=False)
     description = Column(String(255))
-    catalog_id = Column(Integer, ForeignKey('catalogs.catalog_id')) 
+    category_id = Column(Integer, ForeignKey('category.category_id')) 
     owner = Column(String(50))
 
 
