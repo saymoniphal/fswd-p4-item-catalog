@@ -1,7 +1,8 @@
 #!/bin/bash/env python
 
-from flask import Flask, session
-from flask import request, redirect, url_for, render_template
+from flask import Flask, render_template
+import models
+import views
 
 app = Flask(__name__, template_folder='templates')
 app.config.from_object('config')
