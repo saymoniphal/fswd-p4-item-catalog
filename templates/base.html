@@ -27,7 +27,7 @@
 				<div class="col-md-6">
 					<a href="{{ url_for('index') }} ">Home</a>
 					{% if user %}
-						| <a href="{{ url_for('new_item') }}">New item</a>
+						| <a href="{{ url_for('newCategory') }}">New Category</a>
 					{% endif %}
 				</div>
 
@@ -36,11 +36,11 @@
 					<a href="/item_catalog/user/{{user.name}}">
 					  {{user.name}}
 					</a>
-					(<a class="login-link" href="{{ url_for('logout') }}">Logout</a>)
+					(<a class="login-link" href="/logout">Logout</a>)
 				{% else %}
-			      		<a class="login-link" href="{{ url_for('login') }}">Login</a>
+			      		<a class="login-link" href="/login">Login</a>
 			      		|
-			      		<a class="login-link" href="{{ url_for('signup') }}">Signup</a>
+			      		<a class="login-link" href="/singup">Signup</a>
 			    	{% endif %}
 				</div>
 			</div>

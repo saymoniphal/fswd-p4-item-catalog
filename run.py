@@ -1,8 +1,8 @@
 #!/bin/bash/env python
 
 from flask import Flask, render_template
-import models
-import views
+from models import *
+from views import *
 
 app = Flask(__name__, template_folder='templates')
 app.config.from_object('config')

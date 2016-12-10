@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-<nav>
-    This is nav section
-</nav>
+
+<div class="row">
+	<div class="col-md-12">
+  	{% for catalog in catalogs %}
+    		{{ catalog.render() | safe }}
+    		<br><br>
+  	{% endfor %}
+	</div>
+</div>
 {% endblock %}

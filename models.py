@@ -53,8 +53,9 @@ def addCategory(name, user_id, description=None):
     with session_scope() as session:
        session.add(c)
        # flush object 'c' to DB, so that its auto-inc id will be generated
-       session.flush()
-       return c.category_id 
+       # session.flush()
+       # return c.category_id
+       return c 
 
 def editCategory(category_id, name, description=None):
     with session_scope() as session:
@@ -110,7 +111,7 @@ def getUserId(email):
     return user_id
 
 
-def getUser(user_id):
+def getUserInfo(user_id):
     user = None
     with session_scope() as session:
        user = session.query(User).filter_by(user_id=user_id).one()
