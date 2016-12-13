@@ -44,6 +44,15 @@ class Category(Base):
     user_id = Column(Integer, ForeignKey('users.user_id'))
     user = relationship(User)
 
+    def serialize(self):
+        """Return object data in easily serialize format"""
+        return {
+                 'name': self.name,
+                 'description': self.description,
+                 'user_id': self.user_id,
+                 'category_id': self.category_id,
+               }
+
 
 class Item(Base):
     """Class represents table 'item' in the database which has attributes:
@@ -70,4 +79,4 @@ class Item(Base):
 engine = create_engine('sqlite:///itemcatalog.db')
 
 
-Base.metadata.create_all(engine)
+Base.metadata.bind = engine
