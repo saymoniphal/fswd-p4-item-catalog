@@ -38,7 +38,7 @@
 					</a>
 					(<a class="login-link" href="/logout">Logout</a>)
 				{% else %}
-			      		<a class="login-link" href="/login">Login</a>
+			      		<a class="login-link" href="{{ url_for('login') }}">Login</a>
 			      		|
 			      		<a class="login-link" href="/singup">Signup</a>
 			    	{% endif %}
