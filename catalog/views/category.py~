@@ -1,0 +1,24 @@
+from flask import render_template, request, flash
+from flask import Blueprint
+from flask import session as login_session
+
+import random, string
+
+from models import *
+import run
+
+# create a blueprint with name 'category'
+#category_app = Blueprint('category_app', __name__)
+
+
+@run.app.route('/category/new', methods=["GET", "POST"])
+def newCategory():
+    """Add a new catalog"""
+    # TODO:need to check for authenticate user
+    if request.method == 'POST':
+        newCategory = addCategory(login_session['name'],
+                                 login_session['username'],
+                                 login_session['description'])
+        return redirect(url_for('showCategories'))
+    else:
+        return render_template('newCategory.html')

@@ -4,13 +4,14 @@ from flask import session as login_session
 
 import random, string
 
-from models import *
+from catalog import app
+import models
 
 # create a blueprint with name 'category'
-category_app = Blueprint('category_app', __name__)
+#category_app = Blueprint('category_app', __name__)
 
 
-@category_app.route('/category/new', methods=["GET", "POST"])
+@app.route('/category/new', methods=["GET", "POST"])
 def newCategory():
     """Add a new catalog"""
     # TODO:need to check for authenticate user
