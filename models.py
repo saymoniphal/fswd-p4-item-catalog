@@ -49,13 +49,14 @@ def deleteCategory(c_id):
 
 def addCategory(name, user_id, description=None):
     """Adds the category to the database and returns its <id number>"""
-    id = 0 
+    id = 0
     c = Category(name=name, user_id=user_id, description=description)
     with session_scope() as session:
        session.add(c)
        # flush object 'c' to DB, so that its auto-inc id will be generated
        session.flush()
-       id = c.category_id
+       session.expunge(c)
+       id = c.category_id 
     return id 
 
 def editCategory(category_id, name, description=None):
@@ -70,7 +71,8 @@ def editCategory(category_id, name, description=None):
 def getCategory(category_id):
     c = None
     with session_scope() as session:
-      c = session.query(Category).filter_by(category_id=category_id).one()
+       c = session.query(Category).filter_by(category_id=category_id).one()
+       session.expunge(c) 
     return c
 
  
@@ -106,15 +108,16 @@ def createUser(login_session):
 
     newUser = User(name=login_session['username'], email=login_session['email'])
     with session_scope() as session:
-       session.add(newuser)
+       session.add(newUser)
        session.flush()
        #user = session.query(User).filter_by(email=login_session['email']).one()
-       return user.user_id
+       return newUser.user_id
 
 def getUserId(email):
     user_id = None
     with session_scope() as session:
        user = session.query(User).filter_by(email=email).one()  
+       session.expunge(user)
        user_id = user.id
     return user_id
 
@@ -123,6 +126,7 @@ def getUserInfo(user_id):
     user = None
     with session_scope() as session:
        user = session.query(User).filter_by(user_id=user_id).one()
+       session.expunge(user)
     return user 
 
 

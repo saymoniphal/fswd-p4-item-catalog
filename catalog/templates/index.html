@@ -3,10 +3,13 @@
 {% block content %}
 
 <div class="row">
-        <div class="col-md-12">
-        {% if not user %}
-	        <p> User not siged in </p>	
-        {% endif %}
+    <div class="col-md-12">
+    {% if not login_session %}
+	   <p> User not siged in </p>	
+    {% elif login_session and login_session['username'] %}
+       <p> Welcome {{login_session['username']}}</p>
+    {% endif %}
+    </div>
 	<div class="col-md-12">
   	{% for catalog in catalogs %}
     		{{ catalog.name() | safe }}

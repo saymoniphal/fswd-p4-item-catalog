@@ -1,6 +1,7 @@
 DEBUG = False
-SQLALCHEMY_DATABASE_URL = "sqlite://item_catalog.db"
-SECRET_KEY = 'Sm9obiBTY2hyb20ga2lja3MgYXNz'
+SQLALCHEMY_DATABASE_URL = 'sqlite://item_catalog.dbr'
+SECRET_KEY = '9M4HsZ7VoL6Sp8vFMEqwc8Eq'
 #SQLALCHEMY_DATABASE_URL = 
 #                      "postgresql://postgres:postgres@localhost/item_catalog.db"
+CLIENT_SECRET_FILE = 'catalog/client_secrets.json'
 
