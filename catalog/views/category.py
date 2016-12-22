@@ -11,14 +11,42 @@ import models
 #category_app = Blueprint('category_app', __name__)
 
 
+def check_user():
+    if 'username' not in login_session:
+        redirect(url_for('/login')
+
+
 @app.route('/category/new', methods=["GET", "POST"])
 def newCategory():
-    """Add a new catalog"""
-    # TODO:need to check for authenticate user
+    """Add a new category"""
+    check_user()
     if request.method == 'POST':
-        newCategory = addCategory(login_session['name'],
-                                 login_session['username'],
-                                 login_session['description'])
+        newCategory = models.addCategory(name=login_session['name'],
+                                 user_id=login_session['username'],
+                                 description=login_session['description'])
         return redirect(url_for('showCategories'))
     else:
         return render_template('newCategory.html')
+
+
+@app.route('/category/<int:category_id>/edit', methods=["GET", "POST"])
+def editCategory(category_id):
+    """Edit a new category"""
+    check_user() 
+    if request.method == 'POST':
+        category = models.editCategory(category_id=category_id,
+                                name=request.('name'),
+                                description=login_session['description'],
+                                user_id=login_session('username'))
+        return redirect(url_for('showCategories'))
+    else:
+        return render_template('editCategory.html')
+
+@app.route('/category/<int:category_id>/delete', methods=["GET", "POST"])
+def deleteCategory(category_id):
+    check_user()
+    if request.method == 'POST':
+        models.deleteCategory(category_id)
+        return redirect(url_for('showCategories')
+    else:
+        return render_template('deleteCategory.html')
