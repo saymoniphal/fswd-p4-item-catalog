@@ -4,15 +4,17 @@
 
 <div class="row">
     <div class="col-md-12">
-    {% if not login_session %}
+    {% if 'username' not in login_session %}
 	   <p> User not siged in </p>	
     {% elif login_session and login_session['username'] %}
        <p> Welcome {{login_session['username']}}</p>
     {% endif %}
     </div>
 	<div class="col-md-12">
-  	{% for catalog in catalogs %}
-    		{{ catalog.name() | safe }}
+  	{% for c in categories %}
+    		<a href="{{ url_for('showCategory', category_id=c.category_id)}}">
+                {{ c.name | safe }}
+            </a>
     		<br><br>
   	{% endfor %}
 	</div>

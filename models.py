@@ -62,10 +62,16 @@ def getCategory(c_id):
     return getORM(obj_name='Category', filter_by='category_id', filter_v=c_id)
 
 
-def editCategory(category_id, name, description=None):
+def getAllCategories():
+    return session.query(Category).order_by(Category.name)
+
+
+def editCategory(category_id, name=None, description=None):
     c = getCategory(category_id)
-    c.name = name
-    if description:
+    if name is not None:
+        c.name = name
+    
+    if description is not None:
        c.description = description
     add_to_db(c)
 

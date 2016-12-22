@@ -11,7 +11,7 @@ function signInCallback(authResult) {
         // send the one-time-code to the server
         $.ajax({
             type: 'POST',
-            url: '/googleconnect?state={{STATE}}', // send state to server
+            url: '/gconnect?state={{STATE}}', // send state to server
             data: authResult['code'],
             contentType: 'application/octet-stream; charset=UTF-8',
             success: function(result) { // sucessfully sent request to server

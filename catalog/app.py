@@ -41,8 +41,8 @@ def showlogin():
     return render_template('login.html', STATE=state)
 
 
-@app.route('/googleconnect', methods=['POST'])
-def googleconnect():
+@app.route('/gconnect', methods=['GET', 'POST'])
+def gconnect():
     """client must have received authorization code from Google API server.
        This code on the server will exchange auth-code (one-time-use) with
        Google API server for user credential (access_token and id_token)"""
@@ -73,8 +73,8 @@ def googleconnect():
     #3. Validate access_token with Google API server
     access_token = credentials.access_token
     print("access_token: {code}".format(code=access_token)) #DEBUG
-    url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?' +
-           'access_token=%{t}'.format(t=access_token))
+    url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?\
+            access_token=%{token}'.format(token=access_token)
     h = httplib2.Http()
     g_resp = h.request(url, 'GET')
     authorized_token = json.loads(g_resp[1])
@@ -111,13 +111,17 @@ def googleconnect():
 
 
 @app.route('/googledisconnect')
-def googlediconnect():
+def logout():
     """revoke current user's access_token and reset login session"""
-    credentials = login_session['credentials']
+    credentials = None
+    if 'credentials' in login_session:
+        credentials = login_session['credentials']
+
     if credentials is None:
         return response('User is not connected.', 401)
     token = credentials.access_token
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % token 
+    url = 'https://accounts.google.com/o/oauth2/revoke?\
+            token=%{t}'.format(t=token)
     h = httplib2.Http()
     res = h.request(url, 'GET')[0]
     if res['status'] == '200':
@@ -128,10 +132,10 @@ def googlediconnect():
         del login_session['email']
         del login_session['picture']
         
-        return response('Successfully disconnected.'), 200)
+        return response('Successfully disconnected.', 200)
     else:
         # For whatever reason, the given token was invalid.
-        return response('Failed to revoke token for given user.', 400))
+        return response('Failed to revoke token for given user.', 400)
 
 
 def response(content, errorcode):
