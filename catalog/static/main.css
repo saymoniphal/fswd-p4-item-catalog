@@ -1,3 +1,19 @@
-.body {
-    font-size: 14px;
+.main-title {
+    font-size: 50px;
+    margin: 20px;
+    color: #0015ab;
+    text-align: center;
+    text-shadow: 3px 2px gray;
+}
+
+h1 {
+    color: gray;
+    margin: 10px;
+}
+
+footer {
+    color: gray;
+    font-size: 12px;
+    display: fixed;
+    bottom: 0px;
 }

@@ -2,28 +2,44 @@
 <html>
 <head>
 
-   <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
-   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
-   </script>
+    <!-- use utf-8 character set -->
+    <meta charset="utf-8">
+    
+    <!-- browser compatibility, displaying webpage in edge mode, supported by
+        IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-   <script src="//apis.google.com/js/platform.js?onload=start"></script>
+    <!-- use viewport width as per device width (phone, tablet, brower) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-   <script src="//../js/catalog.js"></script>
+    <script src="//../js/catalog.js"></script>
 
-   <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+    <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
+    </script>
+
+    <script src="//apis.google.com/js/platform.js?onload=start"></script>
+    <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+
+    <link type="text/css" rel="stylesheet" href="/static/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/static/main.css">
+
+    <title>Item Catalog</title>
+    <div class="main-title"> Welcome to Catalog App </div>
+    <hr>
 </head>
 
 
 <body>
 
-<!-- GOOGLE PLUS SIGN IN BUTTON-->
+    <!-- GOOGLE PLUS SIGN IN BUTTON-->
 
-   <div>
-    <h3>Sign in with Google</h3>
-   </div>
-   <!-- information below will be used to initialize oauth object -->
-   <div id="signinButton">
-      <span class="g-signin"
+    <div>
+        <h3>Sign in with Google</h3>
+    </div>
+    <!-- information below will be used to initialize oauth object -->
+    <div id="signinButton">
+       <span class="g-signin"
          data-scope="openid email"
          data-clientid="1083232500971-temdo9do38qjinh6eqat3rs3m55j0d7l.apps.googleusercontent.com"
          data-redirecturi="https://www.example.com/oauth2callback"
@@ -31,16 +47,16 @@
          data-cookiepolicy="single_host_origin"
          data-callback="signInCallback"
          data-approvalprompt="force">
-      </span>
-   </div>
+       </span>
+    </div>
 
-<!--END GOOGLE PLUS SIGN IN BUTTON -->
+    <!--END GOOGLE PLUS SIGN IN BUTTON -->
 
     <div id="signInResult">
         <!-- empty div to display the result from third party signin -->
     </div>
 
-<!--
+
 <script>
 function signInCallback(authResult) {
     console.log("Javascript signInCallback function")
@@ -76,8 +92,13 @@ function signInCallback(authResult) {
     }
 }
 </script>
--->
+
+<footer>
+    <hr>
+	Item catalog &copy; 2016 Moniphal Say, article contents are &copy; of respective users.
+</footer>
 
 </body>
+
 
 </html>
