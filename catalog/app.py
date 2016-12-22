@@ -110,7 +110,32 @@ def googleconnect():
     return render_template('index.html', login_session=login_session)
 
 
+@app.route('/googledisconnect')
+def googlediconnect():
+    """revoke current user's access_token and reset login session"""
+    credentials = login_session['credentials']
+    if credentials is None:
+        return response('User is not connected.', 401)
+    token = credentials.access_token
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % token 
+    h = httplib2.Http()
+    res = h.request(url, 'GET')[0]
+    if res['status'] == '200':
+        # revoke success, reset login session
+        del login_session['credentials']
+        del login_session['gplus_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        
+        return response('Successfully disconnected.'), 200)
+    else:
+        # For whatever reason, the given token was invalid.
+        return response('Failed to revoke token for given user.', 400))
+
+
 def response(content, errorcode):
-    response = flask.make_response(json.dumps(content), errorcode)
-    response.headers['Content-Type'] = 'application/json'
-    return response
+    res = flask.make_response(json.dumps(content), errorcode)
+    res.headers['Content-Type'] = 'application/json'
+    return res
+

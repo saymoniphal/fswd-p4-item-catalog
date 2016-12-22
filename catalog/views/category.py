@@ -13,7 +13,7 @@ import models
 
 def check_user():
     if 'username' not in login_session:
-        redirect(url_for('/login')
+        redirect(url_for('/login'))
 
 
 @app.route('/category/new', methods=["GET", "POST"])
@@ -34,10 +34,11 @@ def editCategory(category_id):
     """Edit a new category"""
     check_user() 
     if request.method == 'POST':
-        category = models.editCategory(category_id=category_id,
-                                name=request.('name'),
-                                description=login_session['description'],
-                                user_id=login_session('username'))
+        category = models.getCategory(category_id)
+        if request.form['name']:
+	        category.name = request.form['name']
+        if request.form['description']:
+            category.description = request.form['description']
         return redirect(url_for('showCategories'))
     else:
         return render_template('editCategory.html')
@@ -47,6 +48,11 @@ def deleteCategory(category_id):
     check_user()
     if request.method == 'POST':
         models.deleteCategory(category_id)
-        return redirect(url_for('showCategories')
+        return redirect(url_for('showCategories'))
     else:
         return render_template('deleteCategory.html')
+
+@app.route('/category')
+def showCategories():
+    categories = models.getAllCategories()
+    return render_template('categories.html', categories=categories)
