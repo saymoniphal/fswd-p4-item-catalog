@@ -18,121 +18,108 @@ def connect_db(db_url):
 
 
 DBSession = connect_db('sqlite:///itemcatalog.db')
+session = DBSession()
 
 
-@contextmanager
-def session_scope():
-    """Return session as database handle via engine connection.
-    Provide transactional scope for the session.
-    Use context manager decorator so it can be called via 'with', the session 
-    will be committed and close on sucess, rollback on failure and close""" 
-
-    session = None 
+def add_to_db(orm_obj):
+    """Add given object to the session and commit to the database,
+        rollback transaction in case of failure"""
     try:
-       session = DBSession()
-       yield session
-       session.commit()
+        if session:
+            session.add(orm_obj)
+            session.commit()
     except:
-       if session:
-           session.rollback()
-       raise
-    finally:
-       if session:
-           session.close()
- 
-    
-def deleteCategory(c_id):
-    with session_scope() as session:
-       cat_obj = session.query(Category).filter_by(category_id=c_id).one()
-       session.delete(cat_obj)
+        if session:
+            session.rollback()
+        raise
 
+    
+def delete_from_db(orm_obj):
+    """Delete given object to the session and commit to the database,
+        rollback transaction in case of failure"""
+    try:
+        session.delete(orm_obj)
+        session.commit()
+    except:
+        session.rollback()
+
+
+def getORM(obj_name, filter_by, filter_v):
+    """Return ORM object with data from database"""
+    d = {'User': User, 'Item': Item, 'Category': Category}
+    args = {filter_by:filter_v}
+    return session.query(d[obj_name]).filter_by(**args).first()
+    
 
 def addCategory(name, user_id, description=None):
     """Adds the category to the database and returns its <id number>"""
-    id = 0
     c = Category(name=name, user_id=user_id, description=description)
-    with session_scope() as session:
-       session.add(c)
-       # flush object 'c' to DB, so that its auto-inc id will be generated
-       session.flush()
-       session.expunge(c)
-       id = c.category_id 
-    return id 
+    add_to_db(c)
+    return c.category_id 
+
+
+def getCategory(c_id):
+    return getORM(obj_name='Category', filter_by='category_id', filter_v=c_id)
+
 
 def editCategory(category_id, name, description=None):
-    with session_scope() as session:
-       cat = session.query(Category).filter_by(category_id=category_id).one()
-       cat.name = name
-       if description:
-          cat.description = description
-       session.add(cat)
+    c = getCategory(category_id)
+    c.name = name
+    if description:
+       c.description = description
+    add_to_db(c)
 
 
-def getCategory(category_id):
-    c = None
-    with session_scope() as session:
-       c = session.query(Category).filter_by(category_id=category_id).one()
-       session.expunge(c) 
-    return c
-
- 
-def deleteItem(item_id):
-    with session_scope() as session:
-       item_obj = session.query(Item).filter_by(item_id=item_id).one()
-       session.delete(item_obj)
+def deleteCategory(c_id):
+    c = getCategory(c_id)
+    delete_from_db(c)
 
 
 def addItem(name, category_id, user_id, description=None):
     """Adds the item entry to the database and returns its <id number>"""
-    item = Category(name=name, category_id=category_id, user_id=user_id,
+    item = Item(name=name, category_id=category_id, user_id=user_id,
                    description=description)
-    with session_scope() as session:
-       session.add(item)
-       # flush object 'item' to DB, so that its auto-inc id will be generated
-       session.flush()
-       return item.item_id
+    add_to_db(item)
+    return item.item_id 
+
+
+def getItem(item_id):
+    return getORM(filter_by='item_id', filter_v='item_id', obj_name='Item')
 
 
 def editItem(item_id, name, description=None):
-    with session_scope() as session:
-       item = session.query(Item).filter_by(item_id=item_id).one()
-       item.name = name
-       if description:
-          item.description = description
-       session.add(item)
+    item = getItem(item_id)
+    item.name = name
+    if description:
+       item.description = description
+    add_to_db(item) 
+
+
+def deleteItem(item_id):
+    item = getItem(item_id)
+    delete_from_db(item)
 
 
 def createUser(login_session):
     """Create User object and save to the database. Returns the id number of
     the newly added user"""
 
+    user = getORM(filter_by='email', filter_v=login_session['email'],
+                    obj_name='User')
+    if user: # user already exist, don't add again
+        return user.user_id
+
     newUser = User(name=login_session['username'], email=login_session['email'])
-    with session_scope() as session:
-       session.add(newUser)
-       session.flush()
-       #user = session.query(User).filter_by(email=login_session['email']).one()
-       return newUser.user_id
+    add_to_db(newUser)
+    return newUser.user_id
+
 
 def getUserId(email):
-    user_id = None
-    with session_scope() as session:
-       user = session.query(User).filter_by(email=email).one()  
-       session.expunge(user)
-       user_id = user.id
-    return user_id
+    user = getORM(obj_name='User', filter_by='email', filter_v=email)
+    if user:
+        return user.user_id
+    return None
 
 
-def getUserInfo(user_id):
-    user = None
-    with session_scope() as session:
-       user = session.query(User).filter_by(user_id=user_id).one()
-       session.expunge(user)
-    return user 
-
-
-def main():
-    pass
-
-
-if __name__ == '__main__':
-    main()
+def getUser(user_id):
+    return getORM(filter_by='user_id', filter_v='user_id', obj_name='User')
