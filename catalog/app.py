@@ -1,7 +1,7 @@
 import flask
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect
 from flask import session as login_session
-import httplib2
+import requests
 from oauth2client import client
 
 import json
@@ -18,7 +18,7 @@ app.config.from_object('config')
 @app.route("/")
 @app.route("/item_catalog")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", login_session=login_session)
 
 
 @app.route('/help')
@@ -38,7 +38,8 @@ def showlogin():
                                   string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
-    return render_template('login.html', STATE=state)
+    return render_template('login.html', STATE=state,
+                           login_session=login_session)
 
 
 @app.route('/gconnect', methods=['GET', 'POST'])
@@ -60,81 +61,83 @@ def gconnect():
         # add redirect_uri since it's required by Google API server, but since
         # it's not really being used, any value should be okay
         # 'postmessage' or 'https://www.example.com/oauth2callback' works
-        oauth_flow.redirect_uri = 'https://www.example.com/oauth2callback' 
+        oauth_flow.redirect_uri = 'postmessage'
 
         # exchange authorization code for credentials
         auth_code = request.data
         credentials = oauth_flow.step2_exchange(auth_code)
         print("auth_code: {code}".format(code=auth_code)) #DEBUG
 
-    except client.FlowExchangeError:
+    except client.FlowExchangeError as ex:
+        print('failed to get user credentials: %s' % (ex,))
         return response('Fail to get user credentials.', 401)
 
     #3. Validate access_token with Google API server
     access_token = credentials.access_token
     print("access_token: {code}".format(code=access_token)) #DEBUG
-    url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?\
-            access_token=%{token}'.format(token=access_token)
-    h = httplib2.Http()
-    g_resp = h.request(url, 'GET')
-    authorized_token = json.loads(g_resp[1])
-    
+    result = requests.get('https://www.googleapis.com/oauth2/v1/tokeninfo',
+                          params={'access_token': access_token})
+    authorized_token = result.json()
+
     # verify that user logged-in with access_token is the expected one
     gplus_id = credentials.id_token['sub']
     if authorized_token['user_id'] != gplus_id:
+        print('token user id and given user id do not match')
         return response('Token user id does not match with given user ID.', 401)
 
     # verify client ID
     with open(app.config['CLIENT_SECRET_FILE']) as f:
         client_id = json.load(f)['web']['client_id']
     if authorized_token['issued_to'] != client_id:
+        print('client id and user app do not match')
         return response('Client ID does not match user app', 401)
 
     # store credentials and gplus_id in login_session for later use
-    login_session['credentials'] = credentials
     login_session['gplus_id'] = gplus_id
+    login_session['access_token'] = access_token
 
     #4. Get user information
     userinfo_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
     params = {'access_token': credentials.access_token,
-              'alt': json}
-    resp = request.get(uerinfo_url, params=params)
-    user_data = resp.json
+              'alt': 'json'}
+    resp = requests.get(userinfo_url, params=params)
+    user_data = resp.json()
 
-    login_session['username'] = user_data['username']
+    print(user_data)
+    login_session['username'] = user_data['email']
     login_session['email'] = user_data['email']
     login_session['picture'] = user_data['picture']
 
-    print("authentication done: username:%s" %(user_data['username'],)) #DEBUG
+    print("authentication done: username:%s" %(user_data['email'],)) #DEBUG
     # all done
+    print(login_session)
+    sess = models.connect_db(app.db_uri)()
+    user_obj = models.User(name=login_session['username'],
+                           email=login_session['email'])
+    sess.add(user_obj)
+    sess.commit()
     return render_template('index.html', login_session=login_session)
 
 
 @app.route('/googledisconnect')
 def logout():
     """revoke current user's access_token and reset login session"""
-    credentials = None
-    if 'credentials' in login_session:
-        credentials = login_session['credentials']
-
-    if credentials is None:
+    if 'access_token' not in login_session:
         return response('User is not connected.', 401)
-    token = credentials.access_token
-    url = 'https://accounts.google.com/o/oauth2/revoke?\
-            token=%{t}'.format(t=token)
-    h = httplib2.Http()
-    res = h.request(url, 'GET')[0]
-    if res['status'] == '200':
+    url = 'https://accounts.google.com/o/oauth2/revoke'
+    res = requests.get(url, params={'token': login_session['access_token']})
+    if res.status_code == 200:
         # revoke success, reset login session
-        del login_session['credentials']
+        del login_session['access_token']
         del login_session['gplus_id']
         del login_session['username']
         del login_session['email']
         del login_session['picture']
-        
+
         return response('Successfully disconnected.', 200)
     else:
         # For whatever reason, the given token was invalid.
+        print(res.text)
         return response('Failed to revoke token for given user.', 400)
 
 
@@ -142,4 +145,3 @@ def response(content, errorcode):
     res = flask.make_response(json.dumps(content), errorcode)
     res.headers['Content-Type'] = 'application/json'
     return res
-

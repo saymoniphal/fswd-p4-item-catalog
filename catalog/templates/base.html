@@ -35,11 +35,11 @@
 
 				<div class="col-md-6 login-area text-right">
 				{% if 'username' in login_session %}
-					  {{login_session['username']}}
-					(<a href="{{url_for('logout')}}">Logout</a>)
+					  {{ login_session['username'] }}
+					(<a href="{{ url_for('logout') }}">Logout</a>)
 				{% else %}
-			      		<a href="{{url_for('showlogin')}}">Login</a>
-			    	{% endif %}
+			      		<a href="{{ url_for('showlogin') }}">Login</a>
+			   	{% endif %}
 				</div>
 			</div>
             <hr>
@@ -47,7 +47,7 @@
 
 		<div class="row">
 			<div class="col-md-12 main-title">
-				<a href="{{url_for('showAllCategories')}}" class="main-title">
+				<a href="{{ url_for('showAllCategories') }}" class="main-title">
 		    		Catalog App
 		  		</a>
 			</div>

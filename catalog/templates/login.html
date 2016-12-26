@@ -12,7 +12,7 @@
     <!-- use viewport width as per device width (phone, tablet, brower) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <script src="//../js/catalog.js"></script>
+    <script src="/static/js/catalog.js"></script>
 
     <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js">
@@ -52,46 +52,11 @@
 
     <!--END GOOGLE PLUS SIGN IN BUTTON -->
 
+    <span id="sessionState" class="hidden" data-state="{{STATE}}" />
+
     <div id="signInResult">
         <!-- empty div to display the result from third party signin -->
     </div>
-
-
-<script>
-function signInCallback(authResult) {
-    console.log("Javascript signInCallback function")
-    if (authResult['code']) {
-        // user is authorized, hide the google sigin in button
-        $('#signinButton').attr('style', 'display: none');
-
-        // send the one-time-code to the server
-        $.ajax({
-            type: 'POST',
-            url: '/gconnect?state={{STATE}}', // send state to server
-            data: authResult['code'],
-            contentType: 'application/octet-stream; charset=UTF-8',
-            success: function(result) { // sucessfully sent request to server
-                // verify server response
-                if (result) {
-                    $('#signInResult').html('You have logged in! </br>' +
-                        result + '</br>Redirecting')
-                    setTimeout(function() {
-                          window.location.href = "/item_catalog";
-                          },
-                          4000);
-                } else if (authResult['error']) {
-                    console.log('There was an error: ' +
-                                authResult['error']);
-                }
-            },
-            processData: false // don't process data into jquery string
-        });
-    } else { // there was an error
-        $('#signInResult').html('Failed to make server call, please ' +
-                                'check your configuration');
-    }
-}
-</script>
 
 <footer>
     <hr>

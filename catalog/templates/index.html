@@ -12,7 +12,7 @@
     </div>
 	<div class="col-md-12">
   	{% for c in categories %}
-    		<a href="{{ url_for('showCategory', category_id=c.category_id)}}">
+    		<a href="{{ url_for('showCategory', category_id=c.category_id) }}">
                 {{ c.name | safe }}
             </a>
     		<br><br>
