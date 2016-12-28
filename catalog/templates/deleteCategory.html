@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Delete Category {{ cat.name }}</h2>
+
+<form method="post" class="form-horizontal">
+  <div class="form-group">
+    <input class="form-control" type="hidden" name="category_id" value="{{ cat.category_id }}">
+  </div>
+
+  <p>
+    You are deleting category {{ cat.name }}.
+  </p>
+
+  {% if cat.num_items() > 0 %}
+  <p>
+    This will delete the {{ cat.num_items() }} items in this category.
+  </p>
+  {% endif %}
+
+  <div class="form-group">
+    <button class="btn btn-primary" name="post_action" value="delete_category">Delete</button>
+    <button class="btn btn-warning" name="post_action" value="cancel_delete">Cancel</button>
+  </div>
+</form>
+{% endblock %}
