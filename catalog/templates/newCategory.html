@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if catalog_id %}
+{% if cat %}
 <h2>Edit Category</h2>
 {% else %}
 <h2>New Category</h2>
@@ -9,7 +9,7 @@
 
 <form method="post" class="form-horizontal">
   <div class="form-group">
-    <input class="form-control" type="hidden" name="category_id" value="{{ category_id }}">
+    <input class="form-control" type="hidden" name="category_id" value="{{ cat.category_id }}">
   </div>
 
   <div class="form-group">
@@ -17,7 +17,7 @@
       Name 
     </label>
     <input type="text" class="form-control col-md-10"
-	   name="name" value="{{name}}">
+	   name="name" value="{{cat.name}}">
   </div>
 
   <div class="form-group">
@@ -25,7 +25,7 @@
       Description 
     </label>
     <textarea class="form-control col-md-10"
-	      rows="10" name="description">{{description}}</textarea>
+	      rows="10" name="description">{{cat.description}}</textarea>
   </div>
 
   <div class="form-group">

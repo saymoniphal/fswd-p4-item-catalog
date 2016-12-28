@@ -16,24 +16,7 @@
 	<span class="badge">
 	  {{ c.num_items() }}
 	</span>
-	{% if c.user.user_id == login_session['user_id'] %}
-	<span>
-	  <a href="{{ url_for('editCategory', category_id=c.category_id) }}">Edit</a>
-	  |<a href="{{ url_for('deleteCategory', category_id=c.category_id) }}">Delete</a>
-	</span>
-	{% endif %}
-	<!--
-	  <div class="btn-group">
-	    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"
-		    aria-haspopup="true" aira-expanded="false">Action
-	      <span class="caret"></span>
-	    </button>
-	    <ul class="dropdown-menu">
-	      <li><a href="{{ url_for('editCategory', category_id=c.category_id) }}">Edit</a></li>
-	      <li><a href="{{ url_for('deleteCategory', category_id=c.category_id) }}">Delete</a></li>
-	    </ul>
-	</span>
--->
+
 	{{ c.name }}
       </a>
       {% endfor %}
@@ -43,20 +26,36 @@
   <div class="col-sm-8">
     <div class="category-detail">
       {% if sel_category %}
-      {{ sel_category.description }}
+
+      <h2 class="category-title">{{ sel_category.name }}</h2>
+
+      {% if sel_category.user.name == login_session['username'] %}
+      <div class="category-modification">
+	<a href="{{ url_for('editCategory', category_id=sel_category.category_id) }}">Edit</a>
+	|<a href="{{ url_for('deleteCategory', category_id=sel_category.category_id) }}">Delete</a>
+      </div>
+      {% endif %}
+
+      <div class="category-description">
+	{{ sel_category.description }}
+      </div>
+
       {% endif %}
     </div>
 
     <div class="item-list">
       {% if sel_category and sel_category.num_items() > 0 %}
-      <h3>Items in this category</h3>
-      <ul>
+      <h3 class="item-list-title">Items in this category</h3>
+      <div class="row">
       {% for i in sel_category.items %}
-      <li>
-	{{ i.name }}
-      </li>
+      <div class="col-xs-6 col-md-3">
+	<h4 class="item-title">{{ i.name }}</h4>
+	<div class="item-description">
+	  {{ i.description }}
+	</div>
+      </div>
       {% endfor %}
-      </ul>
+      </div>
       {% endif %}
     </div>
   </div>

@@ -31,6 +31,7 @@ def newCategory():
         return redirect(url_for('showAllCategories'))
     else:
         return render_template('newCategory.html',
+                               cat=None,
                                login_session=login_session)
 
 
@@ -41,15 +42,17 @@ def editCategory(category_id):
     sess = models.connect_db(app.db_uri)()
     cat = models.Category.getById(sess, category_id)
     if request.method == 'POST':
-        if request.form['name']:
-            cat.name = request.form['name']
-        if request.form['description']:
-            cat.description = request.form['description']
-        sess.add(cat)
-        sess.commit()
-        return redirect(url_for('showAllCategories'))
+        if request.form['post_action'] == 'save_category':
+            if request.form['name']:
+                cat.name = request.form['name']
+            if request.form['description']:
+                cat.description = request.form['description']
+            sess.add(cat)
+            sess.commit()
+        return redirect(url_for('showCategory', category_id=category_id))
     else:
         return render_template('newCategory.html',
+                               cat=cat,
                                login_session=login_session)
 
 
@@ -59,11 +62,15 @@ def deleteCategory(category_id):
     sess = models.connect_db(app.db_uri)()
     cat = models.Category.getById(sess, category_id)
     if request.method == 'POST':
-        session.delete(cat)
-        session.commit()
-        return redirect(url_for('showAllCategories'))
+        if request.form['post_action'] == 'delete_category':
+            sess.delete(cat)
+            sess.commit()
+            return redirect(url_for('showAllCategories'))
+        else:
+            return redirect(url_for('showCategory', category_id=category_id))
     else:
         return render_template('deleteCategory.html',
+                               cat=cat,
                                login_session=login_session)
 
 
