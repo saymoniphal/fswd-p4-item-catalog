@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-sm-4">
+    <div class="list-group">
+      {% for c in all_categories %}
+      <a
+	 {% if sel_category and c.category_id == sel_category.category_id %}
+	 class="list-group-item active"
+	 {% else %}
+	 class="list-group-item"
+	 {% endif %}
+	 href="{{ url_for('showCategory', category_id=c.category_id) }}">
+	<span class="badge">
+	  {{ c.num_items() }}
+	</span>
+	{% if c.user.user_id == login_session['user_id'] %}
+	<span>
+	  <a href="{{ url_for('editCategory', category_id=c.category_id) }}">Edit</a>
+	  |<a href="{{ url_for('deleteCategory', category_id=c.category_id) }}">Delete</a>
+	</span>
+	{% endif %}
+	<!--
+	  <div class="btn-group">
+	    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"
+		    aria-haspopup="true" aira-expanded="false">Action
+	      <span class="caret"></span>
+	    </button>
+	    <ul class="dropdown-menu">
+	      <li><a href="{{ url_for('editCategory', category_id=c.category_id) }}">Edit</a></li>
+	      <li><a href="{{ url_for('deleteCategory', category_id=c.category_id) }}">Delete</a></li>
+	    </ul>
+	</span>
+-->
+	{{ c.name }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="col-sm-8">
+    <div class="category-detail">
+      {% if sel_category %}
+      {{ sel_category.description }}
+      {% endif %}
+    </div>
+
+    <div class="item-list">
+      {% if sel_category and sel_category.num_items() > 0 %}
+      <h3>Items in this category</h3>
+      <ul>
+      {% for i in sel_category.items %}
+      <li>
+	{{ i.name }}
+      </li>
+      {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+  </div>
+  
+</div>
+{% endblock %}

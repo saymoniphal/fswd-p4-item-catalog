@@ -18,6 +18,10 @@ h1 {
 footer {
     color: gray;
     font-size: 12px;
-    display: fixed;
+    display: block;
+    position: fixed;
     bottom: 0px;
+    right: 0px;
+    font-family: Monospace;
+    text-align: right;
 }

@@ -70,8 +70,11 @@ def deleteCategory(category_id):
 @app.route('/category/<int:category_id>/show')
 def showCategory(category_id):
     sess = models.connect_db(app.db_uri)()
+    categories = models.Category.all(sess)
     c = models.Category.getById(sess, category_id)
-    return render_template('category.html', category=c,
+    return render_template('catdetail.html',
+                           sel_category=c,
+                           all_categories=categories,
                            login_session=login_session)
 
 @app.route('/')
@@ -79,5 +82,7 @@ def showCategory(category_id):
 def showAllCategories():
     sess = models.connect_db(app.db_uri)()
     categories = models.Category.all(sess)
-    return render_template('index.html', categories=categories,
+    return render_template('catdetail.html',
+                           sel_category=None,
+                           all_categories=categories,
                            login_session=login_session)

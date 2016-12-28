@@ -68,6 +68,9 @@ class Category(Base):
     user_id = Column(Integer, ForeignKey('users.user_id'))
     user = relationship(User, backref=backref('categories'))
 
+    def num_items(self):
+        return len(self.items)
+
     @property
     def serialize(self):
         """Return object data in easily serialize format"""
