@@ -116,7 +116,7 @@ def gconnect():
                            email=login_session['email'])
     sess.add(user_obj)
     sess.commit()
-    return render_template('index.html', login_session=login_session)
+    return redirect(url_for('showAllCategories'))
 
 
 @app.route('/googledisconnect')

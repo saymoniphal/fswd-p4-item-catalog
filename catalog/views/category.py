@@ -1,5 +1,4 @@
-from flask import render_template, request, flash, redirect, url_for
-from flask import Blueprint
+from flask import render_template, request, flash, redirect, url_for, abort
 from flask import session as login_session
 
 import random, string
@@ -39,6 +38,8 @@ def editCategory(category_id):
     check_user()
     sess = models.connect_db(app.db_uri)()
     cat = models.Category.getById(sess, category_id)
+    if cat.user.name != login_session['username']:
+        abort(403)
     if request.method == 'POST':
         if request.form['post_action'] == 'save_category':
             cat.name = request.form['name']
@@ -57,6 +58,9 @@ def deleteCategory(category_id):
     check_user()
     sess = models.connect_db(app.db_uri)()
     cat = models.Category.getById(sess, category_id)
+    if cat.user.name != login_session['username']:
+        abort(403)
+         
     if request.method == 'POST':
         if request.form['post_action'] == 'delete_category':
             sess.delete(cat)
