@@ -41,10 +41,8 @@ def editCategory(category_id):
     cat = models.Category.getById(sess, category_id)
     if request.method == 'POST':
         if request.form['post_action'] == 'save_category':
-            if request.form['name']:
-                cat.name = request.form['name']
-            if request.form['description']:
-                cat.description = request.form['description']
+            cat.name = request.form['name']
+            cat.description = request.form['description']
             sess.add(cat)
             sess.commit()
         return redirect(url_for('showCategory', category_id=category_id))
@@ -87,7 +85,10 @@ def showCategory(category_id):
 def showAllCategories():
     sess = models.connect_db(app.db_uri)()
     categories = models.Category.all(sess)
+    sel_category = None
+    if len(categories) > 0:
+        sel_category = categories[0]
     return render_template('catdetail.html',
-                           sel_category=None,
+                           sel_category=sel_category,
                            all_categories=categories,
                            login_session=login_session)

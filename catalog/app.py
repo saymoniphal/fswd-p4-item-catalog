@@ -1,5 +1,5 @@
 import flask
-from flask import Flask, render_template, request, jsonify, redirect
+from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask import session as login_session
 import requests
 from oauth2client import client
@@ -18,7 +18,7 @@ app.config.from_object('config')
 @app.route("/")
 @app.route("/item_catalog")
 def index():
-    return render_template("index.html", login_session=login_session)
+    return redirect(url_for('showAllCategories')) 
 
 
 @app.route('/help')
