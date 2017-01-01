@@ -7,11 +7,9 @@ import random, string
 from catalog import app
 import models
 
-# create a blueprint with name 'category'
-#category_app = Blueprint('category_app', __name__)
-
 
 def check_user():
+    """Check if user is logged in"""
     if 'username' not in login_session:
         return redirect(url_for('showlogin'))
 
