@@ -5,6 +5,7 @@
 <div class="row">
   <div class="col-sm-4">
     <div class="list-group">
+      <h4 class="category-list-title">Category</h4>
       {% for c in all_categories %}
       <a
 	 {% if sel_category and c.category_id == sel_category.category_id %}
@@ -29,18 +30,19 @@
 
       <h2 class="category-title">{{ sel_category.name }}</h2>
 
-      {% if sel_category.user.name == login_session['username'] %}
+      {% if 'username' in login_session and sel_category.user.name == login_session['username'] %}
       <div class="category-modification">
-	<a href="{{ url_for('editCategory', category_id=sel_category.category_id) }}">Edit</a>
-	|<a href="{{ url_for('deleteCategory', category_id=sel_category.category_id) }}">Delete</a>
+	<a href="{{ url_for('editCategory', category_id=sel_category.category_id) }}">Edit category</a>
+	|<a href="{{ url_for('deleteCategory', category_id=sel_category.category_id) }}">Delete category</a>
+	|<a href="{{ url_for('newItem', category_id=sel_category.category_id) }}">Add new Item</a>
       </div>
+      </h2>
       {% endif %}
 
       <div class="category-description">
 	{{ sel_category.description }}
       </div>
-
-      {% endif %}
+    {% endif %}
     </div>
 
     <div class="item-list">

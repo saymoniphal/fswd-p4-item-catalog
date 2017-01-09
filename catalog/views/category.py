@@ -25,7 +25,8 @@ def newCategory():
                                              user,
                                              request.form['description'])
         sess.commit()
-        return redirect(url_for('showAllCategories'))
+        return redirect(url_for('showCategory',
+                                category_id=newCategory.category_id))
     else:
         return render_template('newCategory.html',
                                cat=None,
@@ -34,7 +35,7 @@ def newCategory():
 
 @app.route('/category/<int:category_id>/edit', methods=["GET", "POST"])
 def editCategory(category_id):
-    """Edit a new category"""
+    """Edit a category"""
     check_user()
     sess = models.connect_db(app.db_uri)()
     cat = models.Category.getById(sess, category_id)

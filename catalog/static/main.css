@@ -14,3 +14,11 @@ h1 {
 .hidden {
     display: None;
 }
+
+.category-list-title {
+    color: #0015ab;
+}
+
+.num-item-title {
+    text-align: right;
+}

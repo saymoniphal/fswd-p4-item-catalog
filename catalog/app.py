@@ -74,7 +74,6 @@ def gconnect():
 
     #3. Validate access_token with Google API server
     access_token = credentials.access_token
-    print("access_token: {code}".format(code=access_token)) #DEBUG
     result = requests.get('https://www.googleapis.com/oauth2/v1/tokeninfo',
                           params={'access_token': access_token})
     authorized_token = result.json()
@@ -82,19 +81,19 @@ def gconnect():
     # verify that user logged-in with access_token is the expected one
     gplus_id = credentials.id_token['sub']
     if authorized_token['user_id'] != gplus_id:
-        print('token user id and given user id do not match')
         return response('Token user id does not match with given user ID.', 401)
 
     # verify client ID
     with open(app.config['CLIENT_SECRET_FILE']) as f:
         client_id = json.load(f)['web']['client_id']
     if authorized_token['issued_to'] != client_id:
-        print('client id and user app do not match')
         return response('Client ID does not match user app', 401)
 
     # store credentials and gplus_id in login_session for later use
     login_session['gplus_id'] = gplus_id
     login_session['access_token'] = access_token
+    print "Access token: " + access_token
+    login_session['credentials'] = credentials.to_json()
 
     #4. Get user information
     userinfo_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
@@ -103,18 +102,14 @@ def gconnect():
     resp = requests.get(userinfo_url, params=params)
     user_data = resp.json()
 
-    print(user_data)
     login_session['username'] = user_data['email']
     login_session['email'] = user_data['email']
     login_session['picture'] = user_data['picture']
 
-    print("authentication done: username:%s" %(user_data['email'],)) #DEBUG
-    # all done
-    print(login_session)
+    # all done, add user to the database
     sess = models.connect_db(app.db_uri)()
-    user_obj = models.User(name=login_session['username'],
+    models.User.create(sess, username=login_session['username'],
                            email=login_session['email'])
-    sess.add(user_obj)
     sess.commit()
     return redirect(url_for('showAllCategories'))
 
@@ -122,23 +117,19 @@ def gconnect():
 @app.route('/googledisconnect')
 def logout():
     """revoke current user's access_token and reset login session"""
-    if 'access_token' not in login_session:
-        return response('User is not connected.', 401)
+    access_token = login_session.get('access_token', None)
+    for key in [ 'access_token', 'gplus_id', 'username',
+                 'email', 'picture' ]:
+        if key in login_session:
+            del login_session[key]
+    if not access_token:
+        return response('Not logged in', 405)
     url = 'https://accounts.google.com/o/oauth2/revoke'
-    res = requests.get(url, params={'token': login_session['access_token']})
-    if res.status_code == 200:
-        # revoke success, reset login session
-        del login_session['access_token']
-        del login_session['gplus_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
-
-        return response('Successfully disconnected.', 200)
-    else:
+    res = requests.get(url, params={'token': access_token, 'alt': 'json'})
+    if res.status_code != 200:
         # For whatever reason, the given token was invalid.
         print(res.text)
-        return response('Failed to revoke token for given user.', 400)
+    return response('Successfully disconnected.', 200)
 
 
 def response(content, errorcode):

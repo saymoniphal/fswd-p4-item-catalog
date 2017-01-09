@@ -162,4 +162,4 @@ def connect_db(db_url):
     # create an engine connecting the database
     engine = create_engine(db_url, echo=False)
     DBSession = sessionmaker(bind=engine)
-    return DBSession 
+    return DBSession

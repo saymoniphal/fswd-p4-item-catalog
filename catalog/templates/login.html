@@ -25,7 +25,7 @@
     <link type="text/css" rel="stylesheet" href="/static/main.css">
 
     <title>Item Catalog</title>
-    <div class="main-title"> Welcome to Catalog App </div>
+    <div class="main-title">Welcome to Catalog App</div>
     <hr>
 </head>
 
@@ -33,36 +33,39 @@
 <body>
 
     <!-- GOOGLE PLUS SIGN IN BUTTON-->
+    <div class="container">
+      <div class="row">
+	<div class="col-md-6">
+          <h3>Sign in with Google</h3>
+	</div>
+      </div>
 
-    <div>
-        <h3>Sign in with Google</h3>
-    </div>
-    <!-- information below will be used to initialize oauth object -->
-    <div id="signinButton">
-       <span class="g-signin"
-         data-scope="openid email"
-         data-clientid="1083232500971-temdo9do38qjinh6eqat3rs3m55j0d7l.apps.googleusercontent.com"
-         data-redirecturi="https://www.example.com/oauth2callback"
-         data-accesstype="offline"
-         data-cookiepolicy="single_host_origin"
-         data-callback="signInCallback"
-         data-approvalprompt="force">
-       </span>
-    </div>
+      <!-- information below will be used to initialize oauth object -->
+      <div class="col-md-6" id="signinButton">
+	<span class="g-signin"
+              data-scope="openid email"
+              data-clientid="1083232500971-temdo9do38qjinh6eqat3rs3m55j0d7l.apps.googleusercontent.com"
+              data-redirecturi="https://www.example.com/oauth2callback"
+              data-accesstype="offline"
+              data-cookiepolicy="single_host_origin"
+              data-callback="signInCallback"
+              data-approvalprompt="force">
+	</span>
+      </div>
 
-    <!--END GOOGLE PLUS SIGN IN BUTTON -->
+      <!--END GOOGLE PLUS SIGN IN BUTTON -->
 
-    <span id="sessionState" class="hidden" data-state="{{STATE}}" />
+      <span id="sessionState" class="hidden" data-state="{{STATE}}" />
 
-    <div id="signInResult">
+      <div id="signInResult">
         <!-- empty div to display the result from third party signin -->
+      </div>
+
+      <footer>
+	<hr>
+	Item catalog &copy; 2016 Moniphal Say.
+      </footer>
     </div>
-
-<footer>
-    <hr>
-	Item catalog &copy; 2016 Moniphal Say, article contents are &copy; of respective users.
-</footer>
-
 </body>
 
 
