@@ -13,13 +13,16 @@ def newCategory():
     sess = models.connect_db(app.db_uri)
     user = models.User.getByName(sess, login_session['username'])
     if request.method == 'POST':
-        newCategory = models.Category.create(sess,
-                                             request.form['name'],
-                                             user,
-                                             request.form['description'])
-        sess.commit()
-        return redirect(url_for('showCategory',
-                                category_id=newCategory.category_id))
+        if request.form['post_action'] == 'save_category':
+            newCategory = models.Category.create(sess,
+                                                 request.form['name'],
+                                                 user,
+                                                 request.form['description'])
+            sess.commit()
+            return redirect(url_for('showCategory',
+                                    category_id=newCategory.category_id))
+        else:
+            return redirect(url_for('showAllCategories'))
     else:
         return render_template('newCategory.html',
                                cat=None,

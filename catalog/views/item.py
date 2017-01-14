@@ -17,10 +17,11 @@ def newItem(category_id):
         abort(403)
 
     if request.method == 'POST':
-        models.Item.create(sess, request.form['name'],
-                           category,
-                           request.form['description'])
-        sess.commit()
+        if request.form['post_action'] == 'save_item':
+            models.Item.create(sess, request.form['name'],
+                               category,
+                               request.form['description'])
+            sess.commit()
         return redirect(url_for('showCategory',
                                 category_id=category.category_id))
     else:
