@@ -66,6 +66,14 @@
       </div>
       {% endfor %}
       </div>
+      {% elif sel_category %}
+      <div class="jumbotron">
+	<p>This category contains no items!  Add a
+	  <a href="{{ url_for('newItem', category_id=sel_category.category_id) }}">
+	    new item
+	  </a>
+	  to get started.</p>
+      </div>
       {% endif %}
     </div>
   </div>
