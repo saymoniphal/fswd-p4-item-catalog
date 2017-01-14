@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, backref
+from sqlalchemy.orm.exc import NoResultFound
 
 Base = declarative_base()
 
@@ -28,22 +29,17 @@ class User(Base):
         """Create User object and save to the database. Returns the id number
         of the newly added user
         """
-        result = session.query(User).filter_by(email=email).one_or_none()
-        if result:
-            return result
+        try:
+            return session.query(User).filter_by(email=email).one()
+        except NoResultFound:
+            pass
         newUser = User(name=username, email=email)
         session.add(newUser)
         return newUser
 
     @staticmethod
-    def getByEmail(session, email):
-        result = session.query(User).filter_by(email=email).one_or_none()
-        return result
-
-    @staticmethod
     def getByName(session, username):
-        result = session.query(User).filter_by(name=username).one_or_none()
-        return result
+        return session.query(User).filter_by(name=username).one()
 
 
 class Category(Base):
