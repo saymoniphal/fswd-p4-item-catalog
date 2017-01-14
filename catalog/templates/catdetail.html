@@ -15,7 +15,7 @@
 	 {% endif %}
 	 href="{{ url_for('showCategory', category_id=c.category_id) }}">
 	<span class="badge">
-	  {{ c.num_items() }}
+	  {{ c.num_items }}
 	</span>
 
 	{{ c.name }}
@@ -46,7 +46,7 @@
     </div>
 
     <div class="item-list">
-      {% if sel_category and sel_category.num_items() > 0 %}
+      {% if sel_category and sel_category.num_items > 0 %}
       <h3 class="item-list-title">Items in this category</h3>
       <div class="row">
 	{% for i in sel_category.items %}	

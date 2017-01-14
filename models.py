@@ -5,6 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship, backref
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm.session import object_session
 
 Base = declarative_base()
 
@@ -62,8 +63,9 @@ class Category(Base):
     user_id = Column(Integer, ForeignKey('users.user_id'))
     user = relationship(User, backref=backref('categories'))
 
+    @property
     def num_items(self):
-        return len(self.items)
+        return object_session(self).query(Item).with_parent(self).count()
 
     @property
     def serialize(self):
