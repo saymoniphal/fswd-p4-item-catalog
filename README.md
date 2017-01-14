@@ -26,7 +26,7 @@ users with Google.
 
 ### Use Vagrant virtual machine
 
-1. Go to `catalog` directory in the terminal,
+1. Go to `catalog` directory in the terminal.
 
 2. Run the `vagrant up` command.  This creates the required virtual
    machine, installs the required packages and creates the catalog
