@@ -1,93 +1,118 @@
-## Project Overview
-This goal of project is to built a database schema and python program to keep
-track of players and matches in a game tournament using swiss-paring system.
-This supports multiple tournaments.
+# Project Overview
+
+The catalog app provides a web interface to create and maintain an
+item catalog.  Multiple categories can be created to organize the
+catalog, and items can be assigned particular categories.
 
 ## How to get source code
+
 Use Git or checkout with SVN using the web url:
-https://github.com/saymoniphal/fswd3-tournament-result.git
+https://github.com/saymoniphal/fswd-p4-item-catalog.git
 
 ## How to run project
-This project requires PosgreSQL database, you may run it on the system with
-PosgreSQL server installed or use Vagrant virtual machine.
 
-#### Use Vagrant virtual machine
+This project requires PostgreSQL database, you may run it on the
+system with PostgreSQL server installed or use Vagrant virtual
+machine.
 
-1. Go to ```catalogue``` directory in the terminal,
-Run command ```vagrant up``` (powers on the virtual machine),
-Run command ```vagrant ssh``` (logs into the virtual machine),
-2. run ```python dbset.py``` to create the tables in the database,
-this needs to run once only.
-3. run ```python run.py``` to start the application server
-4. Open any web browser and type ```http://localhost:5000``` to view the catalogue
+Either way, you should modify the ```config.py``` file and change
+```SECRET_KEY``` to some random string for your instance.  Any value
+is fine, as long as you have generated it yourself and don't share it
+with other instances.
 
-Example:
+Additionally, you should modify the ```catalog/client_secrets.json```
+file and provide your own configuration information for authenticating
+users with Google.
 
-```
-moniphal@titanium:~/git-trees/vagrant/fswd-p3-tournament-result$ vagrant up
-Bringing machine 'default' up with 'virtualbox' provider...
-==> default: Importing base box 'ubuntu/trusty32'...
-==> default: Matching MAC address for NAT networking...
-==> default: Checking if box 'ubuntu/trusty32' is up to date...
-==> default: A newer version of the box 'ubuntu/trusty32' is available! You currently
-==> default: have version '20161109.0.0'. The latest is version '20161122.0.0'. Run
-==> default: `vagrant box update` to update.
-==> default: Setting the name of the VM: fswd-p3-tournament-result_default_1480499539203_97178
-==> default: Clearing any previously set forwarded ports...
-==> default: Clearing any previously set network interfaces...
-==> default: Preparing network interfaces based on configuration...
-    default: Adapter 1: nat
-==> default: Forwarding ports...
-...
-...
-```
+### Use Vagrant virtual machine
 
-```
+1. Go to ```catalog``` directory in the terminal,
 
-moniphal@titanium:~/git-trees/vagrant/fswd-p3-tournament-result$ vagrant ssh
-Welcome to Ubuntu 14.04.5 LTS (GNU/Linux 3.13.0-101-generic i686)
+2. Run the ```vagrant up``` command.  This creates the required
+   virtual machine, installs the required packages and creates the
+   catalog database.
 
- * Documentation:  https://help.ubuntu.com/
+3. Run ```vagrant ssh -- python /vagrant/run.py``` to start the
+   application server
 
- System information disabled due to load higher than 1.0
+4. Open any web browser and type ```http://localhost:5000``` to view
+   the catalog
 
-  Get cloud support with Ubuntu Advantage Cloud Guest:
-    http://www.ubuntu.com/business/services/cloud
+### Run without vagrant
 
-0 packages can be updated.
-0 updates are security updates.
+1. Ensure the ```python-psycopg2``` library is installed.
 
-New release '16.04.1 LTS' available.
-Run 'do-release-upgrade' to upgrade to it.
+2. Create a database for use by the item catalog.
 
-The shared directory is located at /vagrant
-To access your shared files: cd /vagrant
-Last login: Wed Nov 30 10:03:24 2016 from 10.0.2.2
+3. Edit ```config.py``` and point ```DB_URI``` to the URI of the database
+   the catalog should use.
+   
+4. Run ```python dbsetup.py``` to create required tables.
 
-```
+5. Run ```python run.py``` to run the app.
 
-```
-vagrant@vagrant-ubuntu-trusty-32:~$ cd /vagrant/
-vagrant@vagrant-ubuntu-trusty-32:/vagrant$ ls
-config.py  database.ini  pg_config.sh  README.md  tournament.py  tournament.sql  tournament_test.py  Vagrantfile
-
-vagrant@@vagrant-ubuntu-trusty-32:/vagrant$ ls
-config.py  database.ini  README.md  tournament.py  tournament.sql  tournament_test.py
-
+6. Open any web browser and type ```http://localhost:5000``` to view
+   the catalog
 
 ## Project structure
-The database used in this project is Postgresql.
 
-The project structure is as below:
-<pre>
-|-- README.md
-|-- tournament.sql: setup database schema (database and tables definitions ) 
-|-- tournament.py: provides access to the database to add, delete, query data
-|-- tournament\_test.py: provides unit tests for the funtionality implemented
-in tournament.py
-|-- database.ini: contains database configuration (database name)
-|-- config.py: provides access to database.ini file.
+The item catalog uses PostgreSQL as the database.  If you want to use
+it with a different database, make sure you have the required python
+libraries installed, and update the ```DB_URI``` entry in the
+```config.py``` file to contain a URI suitable for sqlalchemy.  Refer
+to the sqlalchemy docs for details on the URI format.
 
-|-- pg_config.sh and Vagrantfile: these files are taken from
-http://github.com/udacity/fullstack-nanodegree-vm as part of Udacity course.
-</pre>
+If you are a developer, the following files might be useful if you
+want to work on fixing bugs or adding features to the application:
+
+- ```pg_config.sh```, ```Vagrantfile```: These files configure vagrant
+  VM and install required packages inside it.
+
+- ```config.py```: This file contains configuration information.
+
+- ```dbsetup.py```: Run this script to create tables in the configured
+  database.
+
+- ```gendata.py```: Run this script with a username to create several
+  categories and items to test the web interface.
+
+- ```db_test.py```: Contains unittests for the model.
+
+- ```run.py```: Run this script to start the webserver serving the
+  catalog app.
+
+- ```catalog/views```: This directory contains various jinja2
+  templates.  Modify these if you want to change how the web interface
+  looks and behaves.
+
+- ```catalog/static```: This directory contains various statically
+  served files, such as css files and javascript code.
+
+# Licenses
+
+This project uses code from the following projects:
+
+## Bootstrap
+
+The MIT License (MIT)
+
+Copyright (c) 2011-2016 Twitter, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
