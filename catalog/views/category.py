@@ -89,6 +89,7 @@ def showCategory(category_id):
     return render_template('catdetail.html',
                            sel_category=c,
                            all_categories=categories,
+                           num_categories=len(categories),
                            login_session=login_session)
 
 
@@ -104,4 +105,5 @@ def showAllCategories():
     return render_template('catdetail.html',
                            sel_category=sel_category,
                            all_categories=categories,
+                           num_categories=len(categories),
                            login_session=login_session)

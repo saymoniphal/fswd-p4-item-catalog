@@ -3,6 +3,7 @@
 {% block content %}
 
 <div class="row">
+  {% if num_categories > 0 %}
   <div class="col-sm-4">
     <div class="list-group">
       <h4 class="category-list-title">Category</h4>
@@ -20,9 +21,19 @@
 
 	{{ c.name }}
       </a>
-      {% endfor %}
     </div>
   </div>
+  {% endfor %}
+  {% else %}
+  <div class="jumbotron">
+    <h1>Welcome to the Catalog app!</h1>
+    {% if 'username' in login_session %}
+    <p>Create a <a href="{{ url_for('newCategory') }}">New Category</a> to get started.</p>
+    {% else %}
+    <p><a href="{{ url_for('showlogin') }}">Login</a> to get started.</p>
+    {% endif %}
+  </div>
+  {% endif %}
 
   <div class="col-sm-8">
     <div class="category-detail">
