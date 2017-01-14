@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-sm-8">
+    <div class="item-detail">
+      {% if item %}
+
+      <h2 class="item-title">{{ item.name }} ({{ item.category.name }})</h2>
+
+      {% if 'username' in login_session and item.category.user.name == login_session['username'] %}
+      <div class="item-modification">
+	<a href="{{ url_for('editItem', item_id=item.item_id) }}">Edit</a>
+	|<a href="{{ url_for('deleteItem', item_id=item.item_id) }}">Delete</a>
+      </div>
+      {% endif %}
+
+      <div class="item-description">
+	{{ item.description }}
+      </div>
+    {% endif %}
+    </div>
+  </div>
+  
+</div>
+{% endblock %}

@@ -8,7 +8,7 @@ import models
 class TestDBConnection(unittest.TestCase):
 
     def setUp(self):
-        self.session = models.connect_db('sqlite:////tmp/itemcatalog.db')()
+        self.session = models.connect_db('sqlite:////tmp/itemcatalog.db')
         models.Base.metadata.create_all(self.session.bind)
 
     def tearDown(self):

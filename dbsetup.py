@@ -1,6 +1,6 @@
 #!/bin/bash/env python3
 
-from sqlalchemy import create_engine 
+from sqlalchemy import create_engine
 
 import config
 import models

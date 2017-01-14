@@ -9,12 +9,12 @@
   </div>
 
   <p>
-    You are deleting category {{ cat.name }}.
+    You are deleting category <strong>{{ cat.name }}</strong>.
   </p>
 
   {% if cat.num_items() > 0 %}
   <p>
-    This will delete the {{ cat.num_items() }} items in this category.
+    This will delete the <strong>{{ cat.num_items() }}</strong> items in this category.
   </p>
   {% endif %}
 

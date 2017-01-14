@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Delete Item {{ item.name }}</h2>
+
+<form method="post" class="form-horizontal">
+  <div class="form-group">
+    <input class="form-control" type="hidden" name="item_id" value="{{ item.item_id }}">
+  </div>
+
+  <p>
+    You are deleting item <strong>{{ item.name }}</strong> in category <strong>{{ item.category.name }}</strong>.
+  </p>
+
+  <div class="form-group">
+    <button class="btn btn-primary" name="post_action" value="delete_item">Delete</button>
+    <button class="btn btn-warning" name="post_action" value="cancel_delete">Cancel</button>
+  </div>
+</form>
+{% endblock %}

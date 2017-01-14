@@ -49,12 +49,9 @@
       {% if sel_category and sel_category.num_items() > 0 %}
       <h3 class="item-list-title">Items in this category</h3>
       <div class="row">
-      {% for i in sel_category.items %}
-      <div class="col-xs-6 col-md-3">
-	<h4 class="item-title">{{ i.name }}</h4>
-	<div class="item-description">
-	  {{ i.description }}
-	</div>
+	{% for i in sel_category.items %}	
+      <div class="col-sm-12">
+	<a href={{ url_for('showItem', item_id=i.item_id) }}>{{ i.name }}</a>
       </div>
       {% endfor %}
       </div>

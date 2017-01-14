@@ -1,7 +1,5 @@
 #!/bin/bash/env python3
 
-from contextlib import contextmanager
-
 from sqlalchemy import Column, Integer, String, Sequence, ForeignKey
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -22,15 +20,15 @@ class User(Base):
 
     # attributes which corespond to each column in the table
     user_id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
-    name = Column(String(50), nullable=False)
-    email = Column(String(50), nullable=False)
+    name = Column(String(50), nullable=False, unique=True)
+    email = Column(String(50), nullable=False, unique=True)
 
     @staticmethod
     def create(session, username, email):
         """Create User object and save to the database. Returns the id number
         of the newly added user
         """
-        result = session.query(User).filter_by(email = email).one_or_none()
+        result = session.query(User).filter_by(email=email).one_or_none()
         if result:
             return result
         newUser = User(name=username, email=email)
@@ -39,12 +37,12 @@ class User(Base):
 
     @staticmethod
     def getByEmail(session, email):
-        result = session.query(User).filter_by(email = email).one_or_none()
+        result = session.query(User).filter_by(email=email).one_or_none()
         return result
 
     @staticmethod
     def getByName(session, username):
-        result = session.query(User).filter_by(name = username).one_or_none()
+        result = session.query(User).filter_by(name=username).one_or_none()
         return result
 
 
@@ -63,7 +61,7 @@ class Category(Base):
     # attributes which represents each column in the table
     category_id = Column(Integer, Sequence('category_id_seq'),
                          primary_key=True)
-    name = Column(String(50), nullable=False)
+    name = Column(String(50), nullable=False, unique=True)
     description = Column(String(255))
     user_id = Column(Integer, ForeignKey('users.user_id'))
     user = relationship(User, backref=backref('categories'))
@@ -75,11 +73,12 @@ class Category(Base):
     def serialize(self):
         """Return object data in easily serialize format"""
         return {
-                 'name': self.name,
-                 'description': self.description,
-                 'user_id': self.user_id,
-                 'category_id': self.category_id
-               }
+            'name': self.name,
+            'description': self.description,
+            'user_id': self.user_id,
+            'category_id': self.category_id,
+            'items': [item.serialize for item in self.items]
+        }
 
     @staticmethod
     def create(session, name, user, description=None):
@@ -143,7 +142,7 @@ class Item(Base):
     @staticmethod
     def getById(session, item_id):
         item = session.query(Item).filter_by(item_id=item_id).one()
-        return item 
+        return item
 
     @staticmethod
     def all(session):
@@ -161,5 +160,4 @@ def connect_db(db_url):
 
     # create an engine connecting the database
     engine = create_engine(db_url, echo=False)
-    DBSession = sessionmaker(bind=engine)
-    return DBSession
+    return sessionmaker(bind=engine)()

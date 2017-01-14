@@ -1,23 +1,16 @@
-from flask import render_template, request, flash, redirect, url_for, abort
+from flask import render_template, request, redirect
+from flask import url_for, abort, jsonify
 from flask import session as login_session
 
-import random, string
-
-from catalog import app
+from catalog import app, login_required
 import models
 
 
-def check_user():
-    """Check if user is logged in"""
-    if 'username' not in login_session:
-        return redirect(url_for('showlogin'))
-
-
 @app.route('/category/new', methods=["GET", "POST"])
+@login_required
 def newCategory():
     """Add a new category"""
-    check_user()
-    sess = models.connect_db(app.db_uri)()
+    sess = models.connect_db(app.db_uri)
     user = models.User.getByName(sess, login_session['username'])
     if request.method == 'POST':
         newCategory = models.Category.create(sess,
@@ -34,10 +27,10 @@ def newCategory():
 
 
 @app.route('/category/<int:category_id>/edit', methods=["GET", "POST"])
+@login_required
 def editCategory(category_id):
     """Edit a category"""
-    check_user()
-    sess = models.connect_db(app.db_uri)()
+    sess = models.connect_db(app.db_uri)
     cat = models.Category.getById(sess, category_id)
     if cat.user.name != login_session['username']:
         abort(403)
@@ -55,13 +48,14 @@ def editCategory(category_id):
 
 
 @app.route('/category/<int:category_id>/delete', methods=["GET", "POST"])
+@login_required
 def deleteCategory(category_id):
-    check_user()
-    sess = models.connect_db(app.db_uri)()
+    """Delete a category"""
+    sess = models.connect_db(app.db_uri)
     cat = models.Category.getById(sess, category_id)
     if cat.user.name != login_session['username']:
         abort(403)
-         
+
     if request.method == 'POST':
         if request.form['post_action'] == 'delete_category':
             sess.delete(cat)
@@ -75,9 +69,18 @@ def deleteCategory(category_id):
                                login_session=login_session)
 
 
+@app.route('/category/<int:category_id>/json')
+def category(category_id):
+    """Return JSON representation of category and items"""
+    sess = models.connect_db(app.db_uri)
+    c = models.Category.getById(sess, category_id)
+    return jsonify(c.serialize)
+
+
 @app.route('/category/<int:category_id>/show')
 def showCategory(category_id):
-    sess = models.connect_db(app.db_uri)()
+    """Show details of a category"""
+    sess = models.connect_db(app.db_uri)
     categories = models.Category.all(sess)
     c = models.Category.getById(sess, category_id)
     return render_template('catdetail.html',
@@ -85,10 +88,12 @@ def showCategory(category_id):
                            all_categories=categories,
                            login_session=login_session)
 
+
 @app.route('/')
 @app.route('/category/all')
 def showAllCategories():
-    sess = models.connect_db(app.db_uri)()
+    """Show all categories"""
+    sess = models.connect_db(app.db_uri)
     categories = models.Category.all(sess)
     sel_category = None
     if len(categories) > 0:
