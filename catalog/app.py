@@ -1,14 +1,14 @@
 from functools import wraps
+import json
+import os.path
+import random
+import string
 
 import flask
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask import session as login_session
 import requests
 from oauth2client import client
-
-import json
-import random
-import string
 
 import models
 
@@ -68,8 +68,9 @@ def gconnect():
     try:
         #2. exchange one-time-use code with Google API server for
         # access_token get oauth 'Flow' object
-        oauth_flow = client.flow_from_clientsecrets(
-                                   app.config['CLIENT_SECRET_FILE'], scope='')
+        oauth_flow = client.flow_from_clientsecrets(os.path.join(app.root_path,
+                                                                 app.config['CLIENT_SECRET_FILE']),
+                                                    scope='')
         # add redirect_uri since it's required by Google API server,
         # but since it's not really being used, any value should be
         # okay 'postmessage' or
@@ -96,7 +97,7 @@ def gconnect():
         return response('Token user id does not match with given user ID.', 401)
 
     # verify client ID
-    with open(app.config['CLIENT_SECRET_FILE']) as f:
+    with app.open_resource(app.config['CLIENT_SECRET_FILE']) as f:
         client_id = json.load(f)['web']['client_id']
     if authorized_token['issued_to'] != client_id:
         return response('Client ID does not match user app', 401)
