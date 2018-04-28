@@ -44,9 +44,9 @@ users with Google.
 1. Apart from having PostgreSQL server installed and configure, please ensure
 that below libraries are installed:
 
-    python-psycopg2
-    python-flask python-sqlalchemy
-    python-requests python-oauth2client
+    * python-psycopg2
+    * python-flask python-sqlalchemy
+    * python-requests python-oauth2client
 
 2. Create a database in your database.
 
