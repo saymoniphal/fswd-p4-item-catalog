@@ -1,8 +1,8 @@
 # Project Overview
 
-The catalog app provides a web interface to create and maintain an
+The catalog application provides a web interface to create and maintain an
 item catalog.  Multiple categories can be created to organize the
-catalog, and items can be assigned particular categories.
+catalog, and items can be assigned to a particular categories.
 
 ## How to get source code
 
@@ -11,11 +11,12 @@ Use Git or checkout with SVN using the web url:
 
 ## How to run project
 
-This project requires PostgreSQL database, you may run it on the
-system with PostgreSQL server installed or use Vagrant virtual
-machine.
+This project requires to start the application on command line. It uses Python,
+Flask, SQLAlchemy and PostgreSQL database to store the
+data, you may run it on the system with the above packages/program installed
+(PostgreSQL server) or use Vagrant virtual machine.
 
-Either way, you should modify the `config.py` file and change
+Either way, you should modify the `config.py` file and change the constant var 
 `SECRET_KEY` to some random string for your instance.  Any value is
 fine, as long as you have generated it yourself and don't share it
 with other instances.
@@ -40,12 +41,18 @@ users with Google.
 
 ### Run without vagrant
 
-1. Ensure the `python-psycopg2` library is installed.
+1. Apart from having PostgreSQL server installed and configure, please ensure
+that below libraries are installed:
 
-2. Create a database for use by the item catalog.
+    python-psycopg2
+    python-flask python-sqlalchemy
+    python-requests python-oauth2client
 
-3. Edit `config.py` and point `DB_URI` to the URI of the database the
-   catalog should use.
+2. Create a database in your database.
+
+3. Edit `config.py` and point `DB_URI` to the URI of the database to be used.
+ex:
+    DB_URI = 'postgres:///catalog'
 
 4. Run `python dbsetup.py` to create required tables.
 
