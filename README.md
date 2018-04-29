@@ -39,6 +39,9 @@ users with Google.
 4. Open any web browser and type `http://localhost:5000` to view the
    catalog
 
+Please note: if you want to stop your VM in vagrant after finished playing with
+the app, you may run command: 'vagrant halt' to stop the vagrant vitual machine.
+
 ### Run without vagrant
 
 1. Apart from having PostgreSQL server installed and configure, please ensure
